@@ -14,12 +14,15 @@ export interface PlayPageCanvasStartGameProps {
   actions?: {
     "start-1"?: () => void;
   };
-
+  /** STATE_GAME.status, drives the OBS_START_GAME_GAME_STARTED_MESSAGE visibility. */
+  gameStatus?: "ready" | "playing";
+  /** STATE_GAME.high_score, exposed as the OBS_START_GAME_HIGH_SCORE_VALUE data-value. */
+  highScore?: number | null;
 }
 
 export type PlayPageCanvasStartGameActionCallbacks = NonNullable<PlayPageCanvasStartGameProps["actions"]>;
 
-export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProps) {
+export function PlayPageCanvasStartGame({ actions, gameStatus, highScore }: PlayPageCanvasStartGameProps) {
   return (
     <>
       {/* Root Surface: SURF_PLAY_PAGE */}
@@ -43,7 +46,7 @@ export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProp
               {/* Expected before: null value, after: "0" value. role="status", name="High score" */}
               <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md">
                 <span className="text-xs uppercase tracking-wider text-slate-400 font-medium">High Score:</span>
-                <div className="text-sm font-mono font-bold text-cyan-400" data-setfarm-element-ref="E000002" role="status" aria-label="High score" data-observable-refs="OBS_START_GAME_HIGH_SCORE_VALUE"></div>
+                <div className="text-sm font-mono font-bold text-cyan-400" data-setfarm-element-ref="E000002" role="status" aria-label="High score" data-observable-refs="OBS_START_GAME_HIGH_SCORE_VALUE" data-value={highScore === null || highScore === undefined ? undefined : String(highScore)}></div>
               </div>
             </div>
           </header>
@@ -64,7 +67,7 @@ export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProp
       
               {/* Game started message observable (OBS_START_GAME_GAME_STARTED_MESSAGE) */}
               {/* Required inside SURF_PLAY_PAGE with visible_text containing "Game started" after action */}
-              <div id="game-status-notification" className="hidden text-xs font-semibold px-3 py-1 rounded bg-cyan-950/80 border border-cyan-800/80 text-cyan-300">
+              <div id="game-status-notification" className={`${gameStatus === "playing" ? "" : "hidden "}text-xs font-semibold px-3 py-1 rounded bg-cyan-950/80 border border-cyan-800/80 text-cyan-300`}>
                 Game started
               </div>
             </div>
